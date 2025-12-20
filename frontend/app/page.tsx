@@ -50,39 +50,46 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
-      <main className="container mx-auto px-4 py-8">
+
+      <main className="site-container py-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Welcome to WearCart
-          </h1>
-          <p className="text-xl text-gray-600">
-            Your Clothing, Digitized
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-12">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Find your perfect fit</h1>
+            <p className="text-lg text-gray-600 mb-6">Curated styles for every occasion — discover trending apparel and enjoy fast checkout.</p>
+            <div className="flex gap-3">
+              <Link href="/products" className="btn-primary">Shop Now</Link>
+              <Link href="/cart" className="px-4 py-2 rounded-lg border border-gray-200">View Cart</Link>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <img src="/hero.jpg" alt="hero" className="w-full rounded-lg shadow-md object-cover h-72" />
+          </div>
         </div>
 
         {/* Filters */}
-        <div className="mb-8 flex flex-wrap gap-4 justify-center">
-          <select
-            value={filters.category}
-            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg"
-          >
-            <option value="">All Categories</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="children">Children</option>
-            <option value="unisex">Unisex</option>
-          </select>
+        <div className="mb-8 flex flex-wrap gap-3 items-center">
+          <div className="flex gap-2">
+            {['All','Men','Women','Children','Unisex'].map((c) => (
+              <button
+                key={c}
+                onClick={() => setFilters({ ...filters, category: c.toLowerCase() === 'all' ? '' : c.toLowerCase() })}
+                className={`px-3 py-1 rounded-full border ${filters.category === (c.toLowerCase()==='all'? '': c.toLowerCase()) ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700'}`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
 
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={filters.search}
-            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            className="px-4 py-2 border border-gray-300 rounded-lg flex-1 max-w-md"
-          />
+          <div className="ml-auto w-full md:w-auto">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={filters.search}
+              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+              className="px-4 py-2 border border-gray-300 rounded-lg w-full md:w-80"
+            />
+          </div>
         </div>
 
         {/* Products Grid */}

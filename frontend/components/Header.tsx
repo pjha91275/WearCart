@@ -38,66 +38,54 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white shadow-md">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3">
-            <Image
-              src="/images/logo.png"
-              alt="WearCart Logo"
-              width={50}
-              height={50}
-              className="object-contain"
-            />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                <span className="text-black">Wear</span>
-                <span className="text-red-600">Cart</span>
-              </h1>
-              <p className="text-xs text-gray-500">Your Clothing, Digitized</p>
-            </div>
-          </Link>
-
-          <nav className="flex items-center space-x-6">
-            <Link href="/" className="text-gray-700 hover:text-red-600">
-              Home
-            </Link>
-            <Link href="/products" className="text-gray-700 hover:text-red-600">
-              Products
-            </Link>
+    <header className="bg-[#F6F5FA] shadow sticky top-0 z-30">
+      <div className="site-container py-4 flex items-center gap-4">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-3">
+            <img src="/logo.jpeg" alt="logo" className="w-60 object-contain" />
             
-            {user ? (
-              <>
-                <Link href="/orders" className="text-gray-700 hover:text-red-600">
-                  My Orders
-                </Link>
-                <Link href="/cart" className="relative text-gray-700 hover:text-red-600">
-                  Cart
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {cartCount}
-                    </span>
-                  )}
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-gray-700 hover:text-red-600"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-gray-700 hover:text-red-600">
-                  Login
-                </Link>
-                <Link href="/register" className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </nav>
+          </Link>
         </div>
+
+        <div className="flex-1 hidden md:flex items-center">
+          <div className="relative w-full max-w-xl">
+            <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1012 19.5a7.5 7.5 0 004.65-2.85z" />
+              </svg>
+            </span>
+            <input
+              type="search"
+              placeholder="Search for products, brands and more"
+              className="w-full pl-11 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200"
+            />
+          </div>
+        </div>
+
+        <nav className="flex items-center gap-4">
+          <Link href="/products" className="hidden md:inline text-gray-700 hover:text-red-600">Products</Link>
+          {user ? (
+            <>
+              <Link href="/orders" className="text-gray-700 hover:text-red-600">My Orders</Link>
+              <button onClick={handleLogout} className="text-gray-700 hover:text-red-600">Logout</button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="text-gray-700 hover:text-red-600">Login</Link>
+              <Link href="/register" className="btn-primary">Sign Up</Link>
+            </>
+          )}
+
+          <Link href="/cart" className="relative inline-flex items-center p-2 rounded-lg hover:bg-gray-50">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 13l-1.5 6h13L17 13" />
+            </svg>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cartCount}</span>
+            )}
+          </Link>
+        </nav>
       </div>
     </header>
   )

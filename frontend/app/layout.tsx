@@ -9,9 +9,6 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'WearCart - Your Clothing, Digitized',
   description: 'Browse and shop for clothing online',
-  icons: {
-    icon: '/favicon.ico',
-  },
 }
 
 export default function RootLayout({
