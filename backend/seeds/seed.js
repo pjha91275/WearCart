@@ -8,28 +8,34 @@ async function seed() {
     await sequelize.sync();
 
     // Create a default internal user
-    const user = await User.create({
-      name: 'Admin User',
-      email: 'admin@example.com',
-      password: 'Password123!',
-      role: 'internal'
+    const [user] = await User.findOrCreate({
+      where: { email: 'admin@example.com' },
+      defaults: {
+        name: 'Admin User',
+        email: 'admin@example.com',
+        password: 'Password123!',
+        role: 'internal'
+      }
     });
 
     // Create a contact (customer)
-    const customer = await Contact.create({
-      userId: user.id,
-      name: 'John Doe',
-      type: 'customer',
-      email: 'john.doe@example.com',
-      mobile: '9999999999',
-      address: { city: 'Mumbai', state: 'MH', pincode: '400001' }
+    const [customer] = await Contact.findOrCreate({
+      where: { email: 'john.doe@example.com' },
+      defaults: {
+        userId: user.id,
+        name: 'John Doe',
+        type: 'customer',
+        email: 'john.doe@example.com',
+        mobile: '9999999999',
+        address: { city: 'Mumbai', state: 'MH', pincode: '400001' }
+      }
     });
 
     // Payment term
     await PaymentTerm.create({
       name: 'Net 30',
       days: 30
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Create some products
     const products = [
@@ -45,7 +51,7 @@ async function seed() {
         purchasePrice: 250.0,
         purchaseTax: 12.0,
         published: true,
-        images: []
+        images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Summer Dress',
@@ -59,7 +65,7 @@ async function seed() {
         purchasePrice: 700.0,
         purchaseTax: 12.0,
         published: true,
-        images: []
+        images: ['https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Denim Jacket',
@@ -73,7 +79,7 @@ async function seed() {
         purchasePrice: 1400.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/denim-jacket.jpg']
+        images: ['https://images.unsplash.com/photo-1523205565295-f8e91625443b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Chinos',
@@ -87,7 +93,7 @@ async function seed() {
         purchasePrice: 450.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/chinos.jpg']
+        images: ['https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Floral Shirt',
@@ -101,7 +107,7 @@ async function seed() {
         purchasePrice: 380.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/floral-shirt.jpg']
+        images: ['https://images.unsplash.com/photo-1764337593519-c51a77b4fc3d?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGZsb3JhbCUyMHNoaXJ0fGVufDB8fDB8fHww']
       },
       {
         productName: 'Kids Hoodie',
@@ -115,7 +121,7 @@ async function seed() {
         purchasePrice: 320.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/kids-hoodie.jpg']
+        images: ['https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Linen Shorts',
@@ -129,7 +135,7 @@ async function seed() {
         purchasePrice: 300.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/linen-shorts.jpg']
+        images: ['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Maxi Skirt',
@@ -143,7 +149,7 @@ async function seed() {
         purchasePrice: 520.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/maxi-skirt.jpg']
+        images: ['https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       },
       {
         productName: 'Sports Cap',
@@ -157,12 +163,16 @@ async function seed() {
         purchasePrice: 90.0,
         purchaseTax: 12.0,
         published: true,
-        images: ['/images/products/sports-cap.jpg']
+        images: ['https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
       }
     ];
 
     for (const p of products) {
-      await Product.findOrCreate({ where: { productName: p.productName }, defaults: p });
+      const [product, created] = await Product.findOrCreate({ where: { productName: p.productName }, defaults: p });
+      if (!created) {
+        // If product exists, update it to ensure we have the correct images
+        await product.update(p);
+      }
     }
 
     // Discount offer + coupon

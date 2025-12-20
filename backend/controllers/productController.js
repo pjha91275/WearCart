@@ -74,7 +74,19 @@ exports.getProduct = async (req, res) => {
 // @access  Private/Internal
 exports.createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    let images = [];
+    if (req.files && req.files.length > 0) {
+      images = req.files.map(file => file.path);
+    }
+
+    // Allow manual image URLs as well if passed
+    if (req.body.imageUrls) {
+      const manualUrls = Array.isArray(req.body.imageUrls) ? req.body.imageUrls : [req.body.imageUrls];
+      images = [...images, ...manualUrls];
+    }
+
+    const productData = { ...req.body, images };
+    const product = await Product.create(productData);
 
     res.status(201).json({
       success: true,
@@ -96,7 +108,17 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
-    product = await product.update(req.body);
+    let images = product.images || [];
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => file.path);
+      images = [...images, ...newImages];
+    }
+
+    // Handle clearing or overwriting images if needed logic can be added here
+    // For now, we append new uploads to existing ones.
+
+    const productData = { ...req.body, images };
+    product = await product.update(productData);
 
     res.status(200).json({
       success: true,

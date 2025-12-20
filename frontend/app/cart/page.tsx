@@ -48,7 +48,7 @@ export default function CartPage() {
                     />
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{item.productName}</h3>
-                      <p className="text-gray-600">₹{item.price.toFixed(2)}</p>
+                      <p className="text-gray-600">₹{Number(item.price).toFixed(2)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
@@ -66,7 +66,7 @@ export default function CartPage() {
                       </button>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">₹{(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-semibold">₹{(Number(item.price) * item.quantity).toFixed(2)}</p>
                       <button
                         onClick={() => removeItem(item.productId)}
                         className="text-red-600 text-sm hover:underline mt-2"

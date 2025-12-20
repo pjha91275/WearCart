@@ -49,7 +49,7 @@ exports.createSaleOrder = async (req, res) => {
       couponCode = await CouponCode.findByPk(couponCodeId, {
         include: [{ model: require('../models/DiscountOffer'), as: 'discountOffer' }]
       });
-      
+
       if (!couponCode || couponCode.status === 'used') {
         return res.status(400).json({ success: false, message: 'Invalid or used coupon code' });
       }
@@ -77,8 +77,13 @@ exports.createSaleOrder = async (req, res) => {
 
     const totals = calculateOrderTotals(orderItems, couponCode);
 
+    // Generate Order Number
+    const count = await SaleOrder.count();
+    const orderNumber = `SO-${String(count + 1).padStart(6, '0')}`;
+
     // Create sale order
     const saleOrder = await SaleOrder.create({
+      orderNumber,
       customerId,
       paymentTermId: paymentTerm.id,
       couponCodeId: couponCode ? couponCode.id : null,
@@ -245,7 +250,7 @@ exports.getSaleOrder = async (req, res) => {
 exports.createInvoice = async (req, res) => {
   try {
     const invoice = await createInvoiceFromOrder(req.params.id);
-    
+
     if (!invoice) {
       return res.status(404).json({ success: false, message: 'Sale order not found' });
     }

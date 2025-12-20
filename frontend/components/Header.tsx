@@ -43,7 +43,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-3">
             <img src="/logo.jpeg" alt="logo" className="w-60 object-contain" />
-            
+
           </Link>
         </div>
 
@@ -66,6 +66,11 @@ export default function Header() {
           <Link href="/products" className="hidden md:inline text-gray-700 hover:text-red-600">Products</Link>
           {user ? (
             <>
+              {user.role === 'internal' && (
+                <Link href="/admin" className="text-red-600 hover:text-red-800 font-bold mr-2">
+                  Admin Panel
+                </Link>
+              )}
               <Link href="/orders" className="text-gray-700 hover:text-red-600">My Orders</Link>
               <button onClick={handleLogout} className="text-gray-700 hover:text-red-600">Logout</button>
             </>

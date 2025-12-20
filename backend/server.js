@@ -30,10 +30,21 @@ app.use('/api/auth', auth);
 app.use('/api/products', products);
 app.use('/api/sale-orders', saleOrders);
 app.use('/api/coupons', coupons);
+app.use('/api/payments', require('./routes/payments'));
 
 // Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Server is running' });
+});
+
+// Simple DB Check for Browser
+app.get('/', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.send('<h1>Database Connected Successfully!</h1><p>The backend is running and connected to PostgreSQL.</p>');
+  } catch (error) {
+    res.status(500).send(`<h1>Database Connection Failed</h1><p>${error.message}</p>`);
+  }
 });
 
 // Initialize database and start server
