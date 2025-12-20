@@ -15,12 +15,12 @@ const sequelize = new Sequelize(
     port: process.env.DB_PORT || 5432,
     dialect: "postgres",
     logging: process.env.NODE_ENV === "development" ? console.log : false,
-    dialectOptions: {
+    dialectOptions: process.env.DB_SSL === 'true' ? {
       ssl: {
         require: true,
         rejectUnauthorized: false, // IMPORTANT for Supabase
       },
-    },
+    } : {},
     pool: {
       max: 5,
       min: 0,

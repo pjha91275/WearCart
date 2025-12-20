@@ -18,3 +18,50 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+/* Modern UI tweaks */
+html, body, #__next {
+  height: 100%;
+}
+
+/* Smooth fonts and rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Generic component styles used across app */
+.btn-primary {
+  @apply bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-sm overflow-hidden transition-shadow transform hover:shadow-xl hover:-translate-y-1;
+}
+
+.glass {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
+}
+
+.site-container {
+  @apply container mx-auto px-4;
+}
+
+/* Small utility for product image ratio */
+.ratio-1-1 {
+  position: relative;
+  padding-bottom: 100%;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+

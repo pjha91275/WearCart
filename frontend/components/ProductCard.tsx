@@ -10,7 +10,7 @@ interface Product {
   productName: string
   productCategory: string
   productType: string
-  salesPrice: number
+  salesPrice: number | string
   images: string[]
   published: boolean
 }
@@ -19,10 +19,11 @@ export default function ProductCard({ product }: { product: Product }) {
   const addToCart = useCartStore((state) => state.addItem)
 
   const handleAddToCart = () => {
+    const price = Number(product.salesPrice || 0)
     addToCart({
       productId: product.id,
       productName: product.productName,
-      price: product.salesPrice,
+      price,
       quantity: 1,
       image: product.images[0] || '/images/logo.png'
     })
@@ -30,38 +31,44 @@ export default function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+    <div className="card">
       <Link href={`/products/${product.id}`}>
-        <div className="relative h-64 w-full">
+        <div className="ratio-1-1 w-full relative bg-gray-100">
           <Image
             src={product.images[0] || '/images/logo.png'}
             alt={product.productName}
             fill
             className="object-cover"
           />
+          {product.published && (
+            <span className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">New</span>
+          )}
         </div>
       </Link>
-      
+
       <div className="p-4">
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-red-600">
+          <h3 className="text-md font-semibold text-gray-900 mb-1 hover:text-red-600">
             {product.productName}
           </h3>
         </Link>
-        
-        <p className="text-sm text-gray-600 mb-2">
+
+        <p className="text-sm text-gray-500 mb-3">
           {product.productType} • {product.productCategory}
         </p>
-        
+
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-red-600">
-            ₹{product.salesPrice.toFixed(2)}
-          </span>
+          <div>
+            <div className="text-lg font-bold text-red-600">₹{Number(product.salesPrice || 0).toFixed(0)}</div>
+            <div className="text-xs text-gray-400">Inclusive of taxes</div>
+          </div>
+
           <button
             onClick={handleAddToCart}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            className="btn-primary"
+            aria-label={`Add ${product.productName} to cart`}
           >
-            Add to Cart
+            Add
           </button>
         </div>
       </div>
