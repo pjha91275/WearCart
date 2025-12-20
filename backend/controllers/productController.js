@@ -1,0 +1,155 @@
+const { Product } = require('../models');
+const { Op } = require('sequelize');
+
+// @desc    Get all products
+// @route   GET /api/products
+// @access  Public (with optional published filter)
+exports.getProducts = async (req, res) => {
+  try {
+    const { published, category, type, search, page = 1, limit = 20 } = req.query;
+    const where = {};
+
+    if (published !== undefined) {
+      where.published = published === 'true';
+    }
+
+    if (category) {
+      where.productCategory = category;
+    }
+
+    if (type) {
+      where.productType = type;
+    }
+
+    if (search) {
+      where[Op.or] = [
+        { productName: { [Op.iLike]: `%${search}%` } },
+        { material: { [Op.iLike]: `%${search}%` } }
+      ];
+    }
+
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Product.findAndCountAll({
+      where,
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [['createdAt', 'DESC']]
+    });
+
+    res.status(200).json({
+      success: true,
+      count,
+      data: rows,
+      page: parseInt(page),
+      pages: Math.ceil(count / limit)
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get single product
+// @route   GET /api/products/:id
+// @access  Public
+exports.getProduct = async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Create product
+// @route   POST /api/products
+// @access  Private/Internal
+exports.createProduct = async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update product
+// @route   PUT /api/products/:id
+// @access  Private/Internal
+exports.updateProduct = async (req, res) => {
+  try {
+    let product = await Product.findByPk(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    product = await product.update(req.body);
+
+    res.status(200).json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete product
+// @route   DELETE /api/products/:id
+// @access  Private/Internal
+exports.deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    await product.destroy();
+
+    res.status(200).json({
+      success: true,
+      data: {}
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update product stock
+// @route   PUT /api/products/:id/stock
+// @access  Private/Internal
+exports.updateStock = async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    const product = await Product.findByPk(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    product.currentStock = quantity;
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      data: product
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
