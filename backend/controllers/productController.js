@@ -24,6 +24,8 @@ exports.getProducts = async (req, res) => {
     if (search) {
       where[Op.or] = [
         { productName: { [Op.iLike]: `%${search}%` } },
+        { productCategory: { [Op.iLike]: `%${search}%` } },
+        { productType: { [Op.iLike]: `%${search}%` } },
         { material: { [Op.iLike]: `%${search}%` } }
       ];
     }

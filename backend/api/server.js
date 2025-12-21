@@ -1,17 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const sequelize = require('./config/database');
-const { SystemSetting } = require('./models');
+const sequelize = require('../config/database');
+const { SystemSetting } = require('../models');
 
 // Load env vars
 dotenv.config();
 
 // Import routes
-const auth = require('./routes/auth');
-const products = require('./routes/products');
-const saleOrders = require('./routes/saleOrders');
-const coupons = require('./routes/coupons');
+const auth = require('../routes/auth');
+const products = require('../routes/products');
+const saleOrders = require('../routes/saleOrders');
+const coupons = require('../routes/coupons');
 
 const app = express();
 
@@ -30,7 +30,7 @@ app.use('/api/auth', auth);
 app.use('/api/products', products);
 app.use('/api/sale-orders', saleOrders);
 app.use('/api/coupons', coupons);
-app.use('/api/payments', require('./routes/payments'));
+app.use('/api/payments', require('../routes/payments'));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -67,7 +67,7 @@ const startServer = async () => {
     }
 
     // Create default payment term "Immediate Payment"
-    const { PaymentTerm } = require('./models');
+    const { PaymentTerm } = require('../models');
     const immediatePayment = await PaymentTerm.findOne({ where: { name: 'Immediate Payment' } });
     if (!immediatePayment) {
       await PaymentTerm.create({
@@ -86,6 +86,9 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// Only start server if run directly (not imported by Vercel)
+if (require.main === module) {
+  startServer();
+}
 
 module.exports = app;

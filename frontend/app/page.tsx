@@ -63,18 +63,18 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden md:block">
-            <img src="/hero.jpg" alt="hero" className="w-full rounded-lg shadow-md object-cover h-72" />
+            <img src="/hero-banner.png" alt="hero" className="w-full rounded-lg shadow-md object-cover h-72" />
           </div>
         </div>
 
         {/* Filters */}
         <div className="mb-8 flex flex-wrap gap-3 items-center">
           <div className="flex gap-2">
-            {['All','Men','Women','Children','Unisex'].map((c) => (
+            {['All', 'Men', 'Women', 'Children', 'Unisex'].map((c) => (
               <button
                 key={c}
                 onClick={() => setFilters({ ...filters, category: c.toLowerCase() === 'all' ? '' : c.toLowerCase() })}
-                className={`px-3 py-1 rounded-full border ${filters.category === (c.toLowerCase()==='all'? '': c.toLowerCase()) ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700'}`}
+                className={`px-3 py-1 rounded-full border ${filters.category === (c.toLowerCase() === 'all' ? '' : c.toLowerCase()) ? 'bg-red-600 text-white border-red-600' : 'bg-white text-gray-700'}`}
               >
                 {c}
               </button>

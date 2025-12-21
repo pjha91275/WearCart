@@ -1,23 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import axios from 'axios'
 import Header from '@/components/Header'
 import ProductCard from '@/components/ProductCard'
-
-interface Product {
-  id: number
-  productName: string
-  productCategory: string
-  productType: string
-  salesPrice: number
-  images: string[]
-  published: boolean
-}
+import { useSearchParams } from 'next/navigation'
 
 export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
+  )
+}
+
+function ProductsContent() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const searchParams = useSearchParams()
   const [filters, setFilters] = useState({
     category: '',
     type: '',
@@ -25,6 +25,17 @@ export default function ProductsPage() {
     minPrice: '',
     maxPrice: ''
   })
+
+  useEffect(() => {
+    if (searchParams) {
+      setFilters(prev => ({
+        ...prev,
+        search: searchParams.get('search') || '',
+        category: searchParams.get('category') || '',
+        type: searchParams.get('type') || ''
+      }))
+    }
+  }, [searchParams])
 
   useEffect(() => {
     fetchProducts()
@@ -45,10 +56,10 @@ export default function ProductsPage() {
       if (filters.category) params.append('category', filters.category)
       if (filters.type) params.append('type', filters.type)
       if (filters.search) params.append('search', filters.search)
-      
+
       // Note: Backend might need update to support price range, capturing here for UI
       // If backend doesn't support it yet, we can filter client side or just send it if supported
-      
+
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/products?${params}`)
       setProducts(response.data.data || [])
     } catch (error) {
@@ -71,7 +82,7 @@ export default function ProductsPage() {
           <aside className="w-full md:w-64 flex-shrink-0">
             <div className="bg-white p-6 rounded-lg shadow-sm sticky top-24">
               <h2 className="text-lg font-bold mb-4">Filters</h2>
-              
+
               <div className="mb-6">
                 <h3 className="font-semibold mb-2">Category</h3>
                 <div className="space-y-2">
@@ -137,7 +148,7 @@ export default function ProductsPage() {
             ) : products.length === 0 ? (
               <div className="bg-white p-12 text-center rounded-lg shadow-sm">
                 <p className="text-xl text-gray-500">No products found fitting your criteria.</p>
-                <button 
+                <button
                   onClick={() => setFilters({ category: '', type: '', search: '', minPrice: '', maxPrice: '' })}
                   className="mt-4 text-red-600 hover:underline"
                 >

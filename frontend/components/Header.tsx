@@ -2,15 +2,41 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useCartStore } from '@/store/cartStore'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function Header() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HeaderContent />
+    </Suspense>
+  )
+}
+
+function HeaderContent() {
   const [user, setUser] = useState<any>(null)
   const cartItems = useCartStore((state) => state.items)
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    if (searchParams) {
+      setSearchQuery(searchParams.get('search') || '')
+    }
+  }, [searchParams])
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/products?search=${encodeURIComponent(searchQuery)}`)
+    } else {
+      router.push('/products')
+    }
+  }
 
   useEffect(() => {
     const token = Cookies.get('token')
@@ -58,6 +84,9 @@ export default function Header() {
               type="search"
               placeholder="Search for products, brands and more"
               className="w-full pl-11 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             />
           </div>
         </div>

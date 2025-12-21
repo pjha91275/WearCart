@@ -125,7 +125,7 @@ async function seed() {
       },
       {
         productName: 'Linen Shorts',
-        productCategory: 'men',
+        productCategory: 'women',
         productType: 'shorts',
         material: 'linen',
         colors: ['beige'],
