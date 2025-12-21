@@ -63,7 +63,7 @@ export default function Home() {
             </div>
           </div>
           <div className="hidden md:block">
-            <img src="/hero-banner.png" alt="hero" className="w-full rounded-lg shadow-md object-cover h-72" />
+            <img src="/hero-banner.jpg" alt="hero" className="w-full rounded-lg shadow-md object-cover h-72" />
           </div>
         </div>
 

@@ -78,3 +78,39 @@ exports.getCoupons = async (req, res) => {
   }
 };
 
+// @desc    Create a discount offer and associated coupon
+// @route   POST /api/coupons
+// @access  Private/Internal
+exports.createDiscount = async (req, res) => {
+  try {
+    const { name, discountPercentage, startDate, endDate, code } = req.body;
+
+    // Create the discount offer
+    const offer = await DiscountOffer.create({
+      name,
+      discountPercentage,
+      startDate: startDate || new Date(),
+      endDate: endDate || new Date(new Date().setMonth(new Date().getMonth() + 1)),
+      availableOn: 'website'
+    });
+
+    // If a code is provided, create a coupon code for it
+    let coupon = null;
+    if (code) {
+      coupon = await CouponCode.create({
+        discountOfferId: offer.id,
+        code: code.toUpperCase(),
+        status: 'unused',
+        expirationDate: offer.endDate
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      data: { offer, coupon }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

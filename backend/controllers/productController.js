@@ -1,5 +1,6 @@
 const { Product } = require('../models');
 const { Op } = require('sequelize');
+const sequelize = require('../config/database');
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -7,6 +8,7 @@ const { Op } = require('sequelize');
 exports.getProducts = async (req, res) => {
   try {
     const { published, category, type, search, page = 1, limit = 20 } = req.query;
+    console.log('GET /products query:', req.query);
     const where = {};
 
     if (published !== undefined) {
@@ -22,21 +24,33 @@ exports.getProducts = async (req, res) => {
     }
 
     if (search) {
+      // Fuzzy search using pg_trgm operators (<-> distance, % similarity)
+      // Casting ENUMs to TEXT for compatibility
       where[Op.or] = [
         { productName: { [Op.iLike]: `%${search}%` } },
-        { productCategory: { [Op.iLike]: `%${search}%` } },
-        { productType: { [Op.iLike]: `%${search}%` } },
-        { material: { [Op.iLike]: `%${search}%` } }
+        sequelize.literal(`"product_name" <-> '${search}' < 0.8`), // Fuzzy match name
+        sequelize.literal(`CAST("product_category" AS TEXT) ILIKE '%${search}%'`), // Cast ENUM
+        sequelize.literal(`"product_type" ILIKE '%${search}%'`),
+        sequelize.literal(`"material" ILIKE '%${search}%'`)
       ];
     }
 
     const offset = (page - 1) * limit;
 
+    console.log('Search WHERE clause:', JSON.stringify(where, null, 2));
+
+    const order = search
+      ? [
+        [sequelize.literal(`"product_name" <-> '${search}'`), 'ASC'], // Closest distance first
+        ['createdAt', 'DESC']
+      ]
+      : [['createdAt', 'DESC']];
+
     const { count, rows } = await Product.findAndCountAll({
       where,
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['createdAt', 'DESC']]
+      order
     });
 
     res.status(200).json({

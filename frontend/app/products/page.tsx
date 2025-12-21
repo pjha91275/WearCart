@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import axios from 'axios'
 import Header from '@/components/Header'
 import ProductCard from '@/components/ProductCard'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function ProductsPage() {
   return (
@@ -17,6 +17,7 @@ export default function ProductsPage() {
 function ProductsContent() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
   const searchParams = useSearchParams()
   const [filters, setFilters] = useState({
     category: '',
@@ -36,6 +37,25 @@ function ProductsContent() {
       }))
     }
   }, [searchParams])
+
+  const updateFilter = (key: string, value: string) => {
+    const params = new URLSearchParams()
+    // Persist existing state, but override with new value
+    // We use 'filters' state as base to preserve any unsaved typing (though better to use URL usually)
+    // Actually, safer to use current URL params + override, but to support the search input preservation:
+    if (filters.search) params.set('search', filters.search)
+    if (filters.category) params.set('category', filters.category)
+    if (filters.type) params.set('type', filters.type)
+
+    if (value) {
+      params.set(key, value)
+    } else {
+      params.delete(key)
+    }
+
+    // Ensure we handle 'All' logic by deletion if value is empty
+    router.push(`/products?${params.toString()}`)
+  }
 
   useEffect(() => {
     fetchProducts()
@@ -92,7 +112,7 @@ function ProductsContent() {
                         type="radio"
                         name="category"
                         checked={filters.category === (c === 'All' ? '' : c.toLowerCase())}
-                        onChange={() => setFilters({ ...filters, category: c === 'All' ? '' : c.toLowerCase() })}
+                        onChange={() => updateFilter('category', c === 'All' ? '' : c.toLowerCase())}
                         className="text-red-600 focus:ring-red-500"
                       />
                       <span>{c}</span>
@@ -110,7 +130,7 @@ function ProductsContent() {
                         type="radio"
                         name="type"
                         checked={filters.type === (t === 'All' ? '' : t)}
-                        onChange={() => setFilters({ ...filters, type: t === 'All' ? '' : t })}
+                        onChange={() => updateFilter('type', t === 'All' ? '' : t)}
                         className="text-red-600 focus:ring-red-500"
                       />
                       <span>{t}</span>
@@ -129,6 +149,11 @@ function ProductsContent() {
                 placeholder="Search products..."
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    updateFilter('search', filters.search)
+                  }
+                }}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm"
               />
             </div>
@@ -149,7 +174,7 @@ function ProductsContent() {
               <div className="bg-white p-12 text-center rounded-lg shadow-sm">
                 <p className="text-xl text-gray-500">No products found fitting your criteria.</p>
                 <button
-                  onClick={() => setFilters({ category: '', type: '', search: '', minPrice: '', maxPrice: '' })}
+                  onClick={() => router.push('/products')}
                   className="mt-4 text-red-600 hover:underline"
                 >
                   Clear all filters
