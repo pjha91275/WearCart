@@ -16,11 +16,12 @@ exports.getProducts = async (req, res) => {
     }
 
     if (category) {
-      where.productCategory = category;
+      // In UI, Category means T-Shirt, Jeans etc. which is productType in DB
+      where.productType = { [Op.iLike]: `%${category}%` };
     }
 
     if (type) {
-      where.productType = type;
+      where.productCategory = type;
     }
 
     if (search) {

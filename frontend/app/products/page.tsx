@@ -89,8 +89,8 @@ function ProductsContent() {
     }
   }
 
-  const categories = ['All', 'Men', 'Women', 'Children', 'Unisex']
-  const types = ['All', 'T-Shirt', 'Jeans', 'Dress', 'Jacket', 'Shirt']
+  const categories = ['All', 'T-Shirt', 'Jeans', 'Dress', 'Jacket', 'Shirt', 'Suit']
+  const types = ['All', 'Men', 'Women', 'Children', 'Unisex']
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,6 +102,24 @@ function ProductsContent() {
           <aside className="w-full md:w-64 flex-shrink-0">
             <div className="bg-white p-6 rounded-lg shadow-sm sticky top-24">
               <h2 className="text-lg font-bold mb-4">Filters</h2>
+
+              <div className="mb-6">
+                <h3 className="font-semibold mb-2">Types</h3>
+                <div className="space-y-2">
+                  {types.map((t) => (
+                    <label key={t} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="type"
+                        checked={filters.type === (t === 'All' ? '' : t.toLowerCase())}
+                        onChange={() => updateFilter('type', t === 'All' ? '' : t.toLowerCase())}
+                        className="text-red-600 focus:ring-red-500"
+                      />
+                      <span>{t}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
 
               <div className="mb-6">
                 <h3 className="font-semibold mb-2">Category</h3>
@@ -116,24 +134,6 @@ function ProductsContent() {
                         className="text-red-600 focus:ring-red-500"
                       />
                       <span>{c}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="font-semibold mb-2">Type</h3>
-                <div className="space-y-2">
-                  {types.map((t) => (
-                    <label key={t} className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="type"
-                        checked={filters.type === (t === 'All' ? '' : t)}
-                        onChange={() => updateFilter('type', t === 'All' ? '' : t)}
-                        className="text-red-600 focus:ring-red-500"
-                      />
-                      <span>{t}</span>
                     </label>
                   ))}
                 </div>

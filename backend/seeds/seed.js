@@ -164,6 +164,34 @@ async function seed() {
         purchaseTax: 12.0,
         published: true,
         images: ['https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
+      },
+      {
+        productName: 'Slim Fit Jeans',
+        productCategory: 'men',
+        productType: 'jeans',
+        material: 'denim',
+        colors: ['blue'],
+        currentStock: 30,
+        salesPrice: 1999.0,
+        salesTax: 18.0,
+        purchasePrice: 900.0,
+        purchaseTax: 12.0,
+        published: true,
+        images: ['https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3']
+      },
+      {
+        productName: 'Professional Suit',
+        productCategory: 'men',
+        productType: 'suit',
+        material: 'wool',
+        colors: ['grey'],
+        currentStock: 15,
+        salesPrice: 8999.0,
+        salesTax: 18.0,
+        purchasePrice: 4000.0,
+        purchaseTax: 12.0,
+        published: true,
+        images: ['https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1771&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D']
       }
     ];
 
