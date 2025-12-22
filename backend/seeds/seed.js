@@ -7,7 +7,7 @@ async function seed() {
 
     await sequelize.sync();
 
-    // Create a default internal user
+    // Create default internal user
     const [user] = await User.findOrCreate({
       where: { email: 'admin@example.com' },
       defaults: {
