@@ -29,6 +29,18 @@ A modern full-stack apparel e-commerce and business management platform that ena
 - **Database**: PostgreSQL with Sequelize ORM
 - **Authentication**: JWT
 
+✨ Key Highlights
+
+- Customer shopping portal
+- Inventory management
+- Sales & purchase order management
+- Customer invoices & vendor bills
+- Payment tracking
+- Coupon & discount management
+- PostgreSQL relational database
+- JWT authentication
+- Role-based administration
+
 ## Project Structure
 
 ```
