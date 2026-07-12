@@ -44,7 +44,7 @@ A modern full-stack apparel e-commerce and business management platform that ena
 ## Project Structure
 
 ```
-ApparelDesk/
+WearCart/
 ├── backend/          # Express.js API
 │   ├── config/       # Database configuration
 │   ├── controllers/ # Route controllers
@@ -192,7 +192,13 @@ The frontend will run on `http://localhost:3000`
 - Linked to discount offers with date ranges
 - Available on sales or website
 
+## Team
+
+This project was built and developed as a team project by:
+- **Prince Jha**
+- **Sachin Jha**
+- **Ishaan Dubey**
+
 ## License
 
 ISC
-
