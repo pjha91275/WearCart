@@ -192,7 +192,7 @@ The frontend will run on `http://localhost:3000`
 - Linked to discount offers with date ranges
 - Available on sales or website
 
-## Team
+## Team 
 
 This project was built and developed as a team project by:
 - **Prince Jha**
